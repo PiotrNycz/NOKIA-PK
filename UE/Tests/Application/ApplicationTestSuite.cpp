@@ -16,6 +16,7 @@ using namespace ::testing;
 class ApplicationTestSuite : public Test
 {
 protected:
+    const common::BtsId BTS_ID{445};
     const common::PhoneNumber PHONE_NUMBER{112};
     NiceMock<common::ILoggerMock> loggerMock;
     StrictMock<IBtsPortMock> btsPortMock;
@@ -23,6 +24,7 @@ protected:
     StrictMock<ITimerPortMock> timerPortMock;
 
 
+    Expectation shallShowNotConnectedOnStart = EXPECT_CALL(userPortMock, showNotConnected());
     Application objectUnderTest{PHONE_NUMBER,
                                 loggerMock,
                                 btsPortMock,
@@ -33,8 +35,16 @@ protected:
 struct ApplicationNotConnectedTestSuite : ApplicationTestSuite
 {};
 
-TEST_F(ApplicationNotConnectedTestSuite, todo)
+TEST_F(ApplicationNotConnectedTestSuite, shallShowNotConnectedOnStart)
 {
+    // implemented by shallShowNotConnectedOnStart member expectation
+}
+
+TEST_F(ApplicationNotConnectedTestSuite, shallSendAttachRequestOnSib)
+{
+    EXPECT_CALL(userPortMock, showConnecting());
+    EXPECT_CALL(btsPortMock, sendAttachRequest(BTS_ID));
+    objectUnderTest.handleSib(BTS_ID);
 }
 
 }
