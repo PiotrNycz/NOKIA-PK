@@ -1,5 +1,6 @@
 #include "ConnectingState.hpp"
 #include "ConnectedState.hpp"
+#include "NotConnectedState.hpp"
 
 namespace ue
 {
@@ -15,21 +16,24 @@ ConnectingState::ConnectingState(Context &context, common::BtsId btsId)
     context.timer.startTimer(500ms);
 }
 
-void ConnectingState::handleTimeout()
-{
-    context.logger.logError("Attach timeout");
-
-}
-
 void ConnectingState::handleAttachAccept()
 {
     context.logger.logDebug("Attach accepted");
+    context.timer.stopTimer();
     context.setState<ConnectedState>();
+}
+
+void ConnectingState::handleTimeout()
+{
+    context.logger.logError("Attach timeout");
+    context.setState<NotConnectedState>();
 }
 
 void ConnectingState::handleAttachReject()
 {
     context.logger.logError("Attach rejected");
+    context.timer.stopTimer();
+    context.setState<NotConnectedState>();
 }
 
 }
