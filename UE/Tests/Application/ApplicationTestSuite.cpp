@@ -70,6 +70,14 @@ TEST_F(ApplicationConnectingTestSuite, shallShowNotConnectedOnTimeout)
     objectUnderTest.handleTimeout();
 }
 
+TEST_F(ApplicationConnectingTestSuite, shallShowNotConnectedOnBtsDisconnected)
+{
+    EXPECT_CALL(userPortMock, showNotConnected());
+    EXPECT_CALL(timerPortMock, stopTimer());
+    objectUnderTest.handleDisconnected();
+}
+
+
 struct ApplicationConnectedTestSuite : ApplicationConnectingTestSuite
 {
     ApplicationConnectedTestSuite()
@@ -83,6 +91,12 @@ struct ApplicationConnectedTestSuite : ApplicationConnectingTestSuite
 TEST_F(ApplicationConnectedTestSuite, shallShowMenuOnAttachAccept)
 {
     // implemented in constructor
+}
+
+TEST_F(ApplicationConnectedTestSuite, shallDisconnect)
+{
+    EXPECT_CALL(userPortMock, showNotConnected());
+    objectUnderTest.handleDisconnected();
 }
 
 

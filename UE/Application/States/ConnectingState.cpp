@@ -36,4 +36,13 @@ void ConnectingState::handleAttachReject()
     context.setState<NotConnectedState>();
 }
 
+void ConnectingState::handleDisconnected()
+{
+    context.logger.logError("Bts Disconnected");
+    context.timer.stopTimer();
+    context.setState<NotConnectedState>();
 }
+
+}
+
+

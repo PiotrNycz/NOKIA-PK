@@ -1,4 +1,5 @@
 #include "ConnectedState.hpp"
+#include "NotConnectedState.hpp"
 
 namespace ue
 {
@@ -9,4 +10,12 @@ ConnectedState::ConnectedState(Context &context)
     context.user.showConnected();
 }
 
+void ConnectedState::handleDisconnected()
+{
+    context.logger.logError("Bts disconnected!");
+    context.setState<NotConnectedState>();
 }
+
+}
+
+

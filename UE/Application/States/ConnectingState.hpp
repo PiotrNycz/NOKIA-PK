@@ -13,6 +13,7 @@ public:
     void handleTimeout() final;
     void handleAttachAccept() final;
     void handleAttachReject() final;
+    void handleDisconnected() final;
 };
 
 }
