@@ -12,6 +12,7 @@
 namespace ue
 {
 using namespace ::testing;
+using namespace std::chrono_literals;
 
 class ApplicationTestSuite : public Test
 {
@@ -40,11 +41,29 @@ TEST_F(ApplicationNotConnectedTestSuite, shallShowNotConnectedOnStart)
     // implemented by shallShowNotConnectedOnStart member expectation
 }
 
-TEST_F(ApplicationNotConnectedTestSuite, shallSendAttachRequestOnSib)
+struct ApplicationConnectingTestSuite : ApplicationNotConnectedTestSuite
 {
-    EXPECT_CALL(userPortMock, showConnecting());
-    EXPECT_CALL(btsPortMock, sendAttachRequest(BTS_ID));
-    objectUnderTest.handleSib(BTS_ID);
+    ApplicationConnectingTestSuite()
+    {
+        EXPECT_CALL(userPortMock, showConnecting());
+        EXPECT_CALL(btsPortMock, sendAttachRequest(BTS_ID));
+        EXPECT_CALL(timerPortMock, startTimer(500ms));
+        objectUnderTest.handleSib(BTS_ID);
+    }
+};
+
+TEST_F(ApplicationConnectingTestSuite, shallSendAttachRequestOnSib)
+{
+    // implemented in TestSuite constructor
 }
+
+TEST_F(ApplicationConnectingTestSuite, shallShowMenuOnAttachAccept)
+{
+    EXPECT_CALL(userPortMock, showConnected());
+    EXPECT_CALL(timerPortMock, stopTimer());
+    objectUnderTest.handleAttachAccept();
+}
+
+
 
 }
